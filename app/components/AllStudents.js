@@ -2,48 +2,42 @@ import React, { Component } from 'react';
 import Navigation from './Navigation';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 import StudentForm from './StudentForm';
 import StudentList from './StudentList';
-import { getStudentsThunk } from '../store/students';
+
+import { getStudentsThunk, deleteStudentThunk } from '../store/students';
 import { getCampusesThunk } from '../store/campuses';
 
-class AllStudents extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showForm: false
-    }
-
-    this.handleFormToggle = this.handleFormToggle.bind(this);
-  }
-
-  componentDidMount() {
-    this.props.getStudents();
-    this.props.getCampuses();
-  }
-
-  render() {
-    return (
-      <div className="students">
-        <Navigation />
-        <h1>All Students View</h1>
-        <button onClick={this.handleFormToggle}>Add Student</button>
-        {
-          this.state.showForm ?
-          <StudentForm action="add" history={this.props.history} hideForm={this.handleFormToggle} campuses={this.props.campuses}/> :
-          null
-        }
-        <div>
-          <StudentList students={this.props.students} />
+function AllStudents (props) {
+  return (
+    <div className="students container">
+      <div className="row">
+        <div className="students-header col-xs-12">
+          <h1>Students</h1>
+          <button className="btn btn-success" onClick={props.toggleStudentForm}>Add Student</button>
         </div>
       </div>
-    );
-  }
-
-  handleFormToggle () {
-    this.setState({ showForm: !this.state.showForm });
-  }
+      <div className="row">
+        <div className="col-xs-12">
+          {
+            props.showStudentForm ?
+            <StudentForm action="add" history={props.history} hideForm={props.toggleStudentForm} /> :
+            null
+          }
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-xs-12 col-sm-10 col-md-8">
+        {
+            props.students.length ?
+            <StudentList history={props.history} students={props.students} view="student" /> :
+            <h4 className="text-danger">No students currently enrolled.</h4>
+          }
+        </div>
+      </div>
+    </div>
+  );
 }
 
 const mapStateToProps = (state) => {
@@ -53,16 +47,5 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getStudents: () => {
-      dispatch(getStudentsThunk());
-    },
-    getCampuses: () => {
-      dispatch(getCampusesThunk());
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AllStudents);
+export default connect(mapStateToProps)(AllStudents);
 

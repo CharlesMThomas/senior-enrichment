@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-// Action Constants
+// Action types
 const ADD_STUDENT = 'ADD_STUDENT';
+const EDIT_STUDENT = 'EDIT_STUDENT';
 const GET_STUDENTS = 'GET_STUDENTS';
 const GET_STUDENTS_FOR_CAMPUS = 'GET_STUDENTS_FOR_CAMPUS';
 const DELETE_STUDENT = 'DELETE_STUDENT';
@@ -43,11 +44,27 @@ export function getStudentsThunk () {
   }
 }
 
+export function editStudentThunk (studentId, hideForm) {
+  return (dispatch, getState) => {
+    axios.put(`/api/students/${studentId}`, getState().studentForm)
+      .then(res => res.data)
+      .then(student => dispatch(editStudent(student)))
+      .then(() => hideForm());
+  }
+}
+
 // Action Creators
 function addStudent (newStudent) {
   return {
     type: ADD_STUDENT,
     newStudent
+  }
+}
+
+function editStudent (student) {
+  return {
+    type: EDIT_STUDENT,
+    student
   }
 }
 
@@ -73,10 +90,20 @@ function getStudents (students) {
 }
 
 // Reducers
-export function studentsReducer (students = [], action) {
+const initialState = [];
+
+export function studentsReducer (students = initialState, action) {
   switch(action.type) {
     case ADD_STUDENT:
       return [...students, action.newStudent];
+    case EDIT_STUDENT:
+      return students.map(student => {
+        if (student.id === action.student.id) {
+          return action.student;
+        } else {
+          return student
+        }
+      });
     case GET_STUDENTS:
       return action.students;
     case GET_STUDENTS_FOR_CAMPUS:

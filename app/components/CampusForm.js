@@ -9,42 +9,58 @@ import { addCampusThunk, editCampusThunk } from '../store/campuses';
 function CampusForm (props) {
   return (
     <div className="add-campus">
-      <form>
-        <label>
-          Campus Name
-        </label>
-        <input
-          id="name"
-          type="text"
-          value={props.name}
-          onChange={props.handleNameChange}
-        />
-        <label>
-          Campus Image
-        </label>
-        <input
-          id="imageURL"
-          type="text"
-          value={props.imageURL}
-          onChange={props.handleImageChange}
-        />
-        <label>
-          Campus Description
-        </label>
-        <textarea
-          id="description"
-          type="text"
-          value={props.description}
-          onChange={props.handleDescChange}
-        >
-        </textarea>
-        {
-          props.action === 'add' ?
-          <button type="submit" onClick={(e) => props.handleAddCampus(e, props)}>Add</button> :
-          <button type="submit" onClick={(e) => props.handleEditCampus(e, props)}>Edit</button>
-        }
-
-      </form>
+      <div className="form-wrapper">
+        <form className="campus-form panel panel-default col-md-6 col-md-offset-3">
+          {
+            props.action === 'add' ?
+            <h2 className="text-center">Add New Campus</h2> :
+            <h2 className="text-center">Edit Campus</h2>
+          }
+          <div className="close-btn" onClick={props.hideForm}><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></div>
+          <div className="form-group">
+            <label>
+              Campus Name
+            </label>
+            <input
+              id="name"
+              type="text"
+              className="form-control"
+              value={props.name}
+              onChange={props.handleNameChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>
+              Campus Image URL
+            </label>
+            <input
+              id="imageURL"
+              type="text"
+              className="form-control"
+              value={props.imageURL}
+              onChange={props.handleImageChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>
+              Campus Description
+            </label>
+            <textarea
+              id="description"
+              type="text"
+              className="form-control"
+              value={props.description}
+              onChange={props.handleDescChange}
+            >
+          </textarea>
+          </div>
+          {
+            props.action === 'add' ?
+            <button className="btn btn-success" type="submit" onClick={(e) => props.handleAddCampus(e, props)}>Add</button> :
+            <button className="btn btn-success" type="submit" onClick={(e) => props.handleEditCampus(e, props)}>Edit</button>
+          }
+        </form>
+      </div>
     </div>
   );
 }

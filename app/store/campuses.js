@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Action constants
+// Action Types
 const GET_CAMPUSES = 'GET_CAMPUSES';
 const ADD_CAMPUS = 'ADD_CAMPUS';
 const DELETE_CAMPUS = 'DELETE_CAMPUS';
@@ -87,6 +87,8 @@ function getCampus (campus) {
 }
 
 // Reducers
+const initialState = [];
+
 export function campusesRecucer (campuses = [], action) {
   switch(action.type) {
     case GET_CAMPUSES:

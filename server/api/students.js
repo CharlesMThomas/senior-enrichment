@@ -3,12 +3,13 @@ const { Students, Campuses } = require('../db/models/index');
 
 router.post('/', (req, res, next) => {
   Students.create(req.body)
-    .then(newStudent => res.send(newStudent))
+    .then(newStudent => Students.findOne({where: {id: newStudent.id}, include: [Campuses]}))
+    .then(newStudentWithCampus => res.send(newStudentWithCampus))
     .catch(next);
 })
 
 router.get('/', (req, res, next) => {
-  Students.findAll()
+  Students.findAll({ include: [Campuses] })
     .then(students => res.send(students))
     .catch(next);
 });
@@ -19,9 +20,10 @@ router.get('/:id', (req, res, next) => {
     .catch(next);
 })
 
-router.get('/campuses/:id', (req, res, next) => {
-  Students.findAll({where: {campusId: req.params.id}})
-    .then(students => res.send(students))
+router.put('/:id', (req, res, next) => {
+  Students.update(req.body, {where: {id: req.params.id}})
+    .then(() => Students.findOne({ where: { id: req.params.id }, include: [Campuses]}))
+    .then(updatedStudent => res.send(updatedStudent))
     .catch(next);
 })
 

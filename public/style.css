@@ -1,0 +1,96 @@
+ul {
+  padding-left: 0;
+}
+
+body {
+  background: #fff; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(#fff, #fcfcfc); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#fff, #fcfcfc); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#fff, #fcfcfc); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#fff, #fcfcfc); /* Standard syntax */
+  min-height: 100vh;
+}
+
+.navbar {
+  border-radius: 0;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.navbar-right {
+  padding-top: 8px;
+}
+
+.nav-btns {
+  margin-right: 12px;
+}
+
+.campuses, .campus, .students, .single-student {
+  margin-top: 30px;
+}
+
+.campuses-header, .campus-header, .students-header, .single-student-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 30px;
+}
+
+.add-campus-btn, .campus-buttons, .students-header .btn, .header-btn {
+  margin-top: 20px;
+  height: 34px;
+}
+
+.campus-buttons button, .buttons-wrapper button {
+  margin-left: 12px;
+}
+
+.campus-form, .student-form {
+  padding: 5px 30px 30px 30px;
+}
+
+.add-campus .panel-default {
+  top: 50%;
+  margin-top: -200px;
+}
+
+.add-student .panel-default {
+  top: 50%;
+  margin-top: -228px;
+}
+
+.campuses .panel:hover {
+  box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
+}
+
+.modal {
+  display: block !important;
+}
+
+.form-wrapper {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 3;
+}
+
+.close-btn {
+  float: right;
+  margin-top: -50px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.campus-details {
+  margin-top: 30px;
+}
+
+.student-list .delete {
+  cursor: pointer;
+}
+
+.hide {
+  display: none;
+}

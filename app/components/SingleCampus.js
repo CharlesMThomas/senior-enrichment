@@ -7,75 +7,82 @@ import CampusForm from './CampusForm';
 import StudentList from './StudentList';
 import StudentForm from './StudentForm';
 
-import { getCampusThunk, deleteCampusThunk} from '../store/selectedCampus';
-import { resetCampusForm } from '../store/campusForm';
+import { deleteCampusThunk } from '../store/campuses';
+import { resetCampusForm, updateCampusFormAllFields } from '../store/campusForm';
 import { getStudentsForCampusThunk, deleteStudentThunk } from '../store/students';
 import { updateStudentFormCampus } from '../store/studentForm';
 
-class SingleCampus extends Component {
-    constructor(props) {
-      super(props);
-
-      this.state = {
-        showForm: false,
-        showStudentForm: false
-      }
-
-      this.handleToggleForm = this.handleToggleForm.bind(this);
-      this.handleToggleStudentForm = this.handleToggleStudentForm.bind(this);
-    }
-
-    componentDidMount() {
-      const campusID = this.props.match.params.id;
-      this.props.getCampus(campusID);
-      this.props.getStudentsForCampus(campusID);
-      this.props.resetForm();
-    }
-
-    render() {
-      return (
-        <div className="campus">
-          <Navigation />
-          <h1>Single Campus View</h1>
-          <button onClick={this.handleToggleForm}>Edit Campus</button>
-          <button onClick={() => this.props.deleteCampus(this.props.campus.id, this.props.history)}>Delete Campus</button>
-          <button onClick={this.handleToggleStudentForm}>Add Student</button>
-          {
-            this.state.showForm ?
-            <CampusForm  action="edit" campusID={this.props.campus.id} hideForm={this.handleToggleForm} /> :
-            null
-          }
-          {
-            this.state.showStudentForm ?
-            <StudentForm  action="add-to-campus" campuses={[this.props.campus]} hideForm={this.handleToggleStudentForm} /> :
-            null
-          }
-          <div className="campus-details">
-            {this.props.campus.name}
-            <img src={this.props.campus.imageURL} />
-            {this.props.campus.description}
-          </div>
-          <div className="campus-students">
-            <StudentList history={this.props.history} students={this.props.students} deleteStudent={this.props.deleteStudent}/>
+function SingleCampus (props) {
+  const campus = props.campus || {};
+  const students = props.students || [];
+  return (
+    <div className="campus container">
+      <div className="row">
+        <div className="campus-header col-xs-12">
+          <h1>{campus.name}</h1>
+          <div className="campus-buttons">
+            <button className="btn btn-default" onClick={() => { props.toggleCampusForm(), props.handleCampusEdit(campus)}}>
+              <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit Campus
+            </button>
+            <button className="btn btn-danger" onClick={() => props.deleteCampus(props.campus.id, props.history)}>
+              <span className="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete Campus
+            </button>
+            <button className="btn btn-success" onClick={() => { props.toggleStudentForm(); props.handleCampusChange(props.campusID)}}>
+              <span className="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Student
+            </button>
           </div>
         </div>
-      );
-    }
-
-    handleToggleForm() {
-      this.setState({ showForm: !this.state.showForm });
-    }
-
-    handleToggleStudentForm() {
-      this.props.handleCampusChange(this.props.campus.id);
-      this.setState({ showStudentForm: !this.state.showStudentForm });
-    }
+      </div>
+      <div className="row">
+        <div className="col-xs-12">
+          {
+            props.showCampusForm ?
+            <CampusForm action="edit" campusID={props.campus.id} hideForm={props.toggleCampusForm} currentCampus={props.campus}/> :
+            null
+          }
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-xs-12">
+      {
+        props.showStudentForm ?
+        <StudentForm  action="add-to-campus" campuses={[props.campus]} hideForm={props.toggleStudentForm} /> :
+        null
+      }
+        </div>
+      </div>
+      <div className="row">
+        <div className="campus-details col-md-6">
+          <div className="col-md-4">
+            <img className="img-responsive" src={campus.imageURL} />
+          </div>
+          <div className="col-md-8">
+            <h3>About</h3>
+            <p className="text-justify">{campus.description}</p>
+          </div>
+        </div>
+        <div className="campus-students col-md-6">
+          <h3>Enrolled Students</h3>
+          {
+            students.length ?
+            <StudentList history={props.history} students={students} view="campus" /> :
+            <h4 className="text-danger">No students currently enrolled.</h4>
+          }
+        </div>
+      </div>
+    </div>
+  );
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
-    campus: state.selectedCampus,
-    students: state.students
+    campus: state.campuses.find(campus => {
+      return campus.id === +ownProps.routeProps.match.params.id;
+    }),
+    students: state.students.filter(student => {
+      return student.campusId === +ownProps.routeProps.match.params.id;
+    }),
+    campusID: +ownProps.routeProps.match.params.id
   }
 }
 
@@ -84,20 +91,11 @@ const mapDispatchToProps = (dispatch) => {
     deleteCampus: (campusID, history) => {
       dispatch(deleteCampusThunk(campusID, history));
     },
-    getCampus: (campusID) => {
-      dispatch(getCampusThunk(campusID));
-    },
-    getStudentsForCampus: (campusID) => {
-      dispatch(getStudentsForCampusThunk(campusID));
-    },
     handleCampusChange: (campusID) => {
       dispatch(updateStudentFormCampus(campusID))
     },
-    resetForm: () => {
-      dispatch(resetCampusForm());
-    },
-    deleteStudent: (studentID) => {
-      dispatch(deleteStudentThunk(studentID));
+    handleCampusEdit: (campus) => {
+      dispatch(updateCampusFormAllFields(campus))
     }
   }
 }
