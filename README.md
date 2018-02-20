@@ -1,6 +1,6 @@
 # Senior Enrichment Project
 
-Make a thing!
+Video Walkthrough: https://youtu.be/_z_M3nhjRUg (https://youtu.be/_z_M3nhjRUg)
 
 ## Getting started
 
